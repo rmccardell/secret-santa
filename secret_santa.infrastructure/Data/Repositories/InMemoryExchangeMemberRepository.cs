@@ -12,9 +12,7 @@ namespace secret_santa.infrastructure.Data.Repositories
     public class InMemoryExchangeMemberRepository : IExchangeMemberRepository
     {
         private static readonly List<Member> Members;
-        private static readonly List<Member> NoExchangeMembers;
-
-        private IExchangeListGenerator _exchangeListGenerator  = new ExchangeListGenerator();
+        private IExchangeListGenerator _exchangeListGenerator = new ExchangeListGenerator();
 
         static InMemoryExchangeMemberRepository()
         {
@@ -33,10 +31,6 @@ namespace secret_santa.infrastructure.Data.Repositories
                 }
             };
 
-            NoExchangeMembers = new List<Member>
-            {
-
-            };
         }
 
         public List<Member> GetAllMembers()
@@ -46,8 +40,14 @@ namespace secret_santa.infrastructure.Data.Repositories
 
         public Member FindMember(string id)
         {
-            var existingMember = Members.FirstOrDefault(m => m.Id == new Guid(id));
-            return existingMember;
+            if (Guid.TryParse(id, out Guid guid))
+            {
+                var existingMember = Members.FirstOrDefault(m => m.Id == guid);
+                return existingMember;
+            }
+
+            return null;
+
         }
 
         public Member AddMember(Member member)
@@ -75,10 +75,6 @@ namespace secret_santa.infrastructure.Data.Repositories
                 throw new EntityNotFoundException($"member with id {member.Id} not found");
             }
 
-            if (NoExchangeMembers.Contains(existingMember))
-            {
-                NoExchangeMembers.Remove(existingMember);
-            }
 
             Members.Remove(existingMember);
 
@@ -109,8 +105,6 @@ namespace secret_santa.infrastructure.Data.Repositories
                 throw new EntityNotFoundException($"member with id {member.Id} not found");
             }
 
-            NoExchangeMembers.Add(existingMember);
-
         }
 
         public void RemoveFromNoExchangeList(Member member)
@@ -122,12 +116,6 @@ namespace secret_santa.infrastructure.Data.Repositories
                 throw new EntityNotFoundException($"member with id {member.Id} not found");
             }
 
-            NoExchangeMembers.Remove(existingMember);
-        }
-
-        public List<Member> GetAllNoExchangeMembers()
-        {
-            return NoExchangeMembers;
         }
 
         public List<Match<Member>> GenerateMatchResults()

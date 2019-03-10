@@ -25,7 +25,32 @@ namespace secret_santa.Controllers
         }
 
         [HttpGet]
+        [Route("{id:Guid}")]
         [ProducesResponseType(typeof(Member), StatusCodes.Status200OK)]
+        public ActionResult<Member> Get(Guid id)
+        {
+            try
+            {
+
+                 
+                if (id == null || id == Guid.Empty)
+                {
+                    return BadRequest();
+                }
+
+                var member = _exchangeMemberRepository.FindMember(id.ToString());
+
+                return Ok(member);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<Member>), StatusCodes.Status200OK)]
         public ActionResult<List<Member>> Get()
         {
             try
@@ -41,6 +66,7 @@ namespace secret_santa.Controllers
             }
         }
 
+    
         [HttpPost]
         [ProducesResponseType(typeof(Member), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

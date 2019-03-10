@@ -50,7 +50,7 @@ namespace secret_santa
             {
                 app.UseDeveloperExceptionPage();
 
-                   app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
+                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
                 {
                     HotModuleReplacement = true,
                     ConfigFile = Path.Combine(env.ContentRootPath, @"node_modules\@vue\cli-service\webpack.config.js")
@@ -75,12 +75,16 @@ namespace secret_santa
 
             app.UseMvc(routes =>
             {
-            
+
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(name: "ServiceApi",
+                 template: "api/{controller}/{action}/{id:Guid}");
+
             });
-         
+
 
             // here you can see we make sure it doesn't start with /api, if it does, it'll 404 within .NET if it can't be found
             app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
