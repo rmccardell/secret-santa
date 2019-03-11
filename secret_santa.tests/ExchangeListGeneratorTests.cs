@@ -43,7 +43,7 @@ namespace secret_santa.tests
 
                 var exchangeListGen = new ExchangeListGenerator();
 
-                var matches = exchangeListGen.Generate(members, 1);
+                var matches = exchangeListGen.Generate(members, null);
                 
                 //should be no errors
                 var errors = matches.Where(m => !string.IsNullOrEmpty(m.ErrorMessage)).ToList();
@@ -113,7 +113,7 @@ namespace secret_santa.tests
 
                 var exchangeListGen = new ExchangeListGenerator();
 
-                var matches = exchangeListGen.Generate(members, 1);
+                var matches = exchangeListGen.Generate(members, null);
 
                 //should be no errors
                 var errors = matches.Where(m => !string.IsNullOrEmpty(m.ErrorMessage)).ToList();
